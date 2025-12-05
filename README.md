@@ -1,5 +1,7 @@
 # LIBRARY365 
 
+## PROJECT THEME
+
 LIBRARY365 is a backend app to handle a library.  
 It's main focus is to be a complete, scalable and secure app  
 capable of doing all the operation of a modern library :  
@@ -10,7 +12,7 @@ capable of doing all the operation of a modern library :
 - **Sales** 
 - **User handling** 
 
-The app was developed using Spring Boot as the main backend framework. As database, PostgreSQL was used.
+The app was developed using Spring Boot as the main backend framework. As database, PostgresSQL was used.
 
 The app was made keeping in mind **best practices**, **API REST**, **security**, **Data validation** and interaction with **external services**
 
@@ -19,6 +21,18 @@ Library365 could be integrated easily with an ecommerce platform or with any fro
 This project was made as a part of Backend Programming exam and the main scope is to show the acquired skill:  
 
 - **Domain design**
-- **Data persistance**
-- **JWT Autenthication**
--
+- **Data persistence**
+- **JWT Authentication**
+- **Relationship**
+- **Inheritance and Polymorphism**
+- **External API**
+- **Advanced Query**
+- **Rest API**
+- **Endpoint Handling**
+- **Security**
+
+## DOMAIN 
+
+![Project Entity Relationship Diagram](img/Library365.png)
+
+
