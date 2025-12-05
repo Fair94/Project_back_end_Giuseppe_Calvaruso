@@ -34,5 +34,21 @@ This project was made as a part of Backend Programming exam and the main scope i
 ## DOMAIN 
 
 ![Project Entity Relationship Diagram](img/Library365.png)
+The image show the Entity Relationship diagram.
+The project includes 8 entities and 2 junction tables.
+1) **User**: This entity represents typical library's user with main attributes such as name, surname, mail, password, etc...
+2) **Role**: This table represents the User's role
+3) **Users_Roles**: This is the junction table that link User and Role. It is used to divide an N:N relationship into two  1:N relationships  
 
+4) **Loan**: This is the table for books loaning, linked to User's and Book's table. There are field for loan date, return date and for information about user and book 
+5) **Reservation**: This is the table used when there are no book's available and one user reserve one copy for him. There are field for the loan status, a date for the reservation and info about user and book
+6) **Book**: Abstract Class. Alongside User, this is one of the major entity of the project. Has field for title,ISBN, description, publication year and cover
+7) **Printed_Book**: Concrete Class,"child" of Book, implementation of Book. This is a physical book. Has the same field of his "father" and other important field such as position in the physical library, total copies and available copies
+8) **E_Book**:Concrete Class, "child" of Book, implementation of Book. Has the same field of his "father" with other important field such as url and licenseType
 
+### Logic
+The logic of the project is based over these entities.
+We can have 3 different type of User: Admin, Librarian and User.  
+**Admin**  can handle **Librarian**, **User**, **User activity** and the **Library**.  
+**Librarian** can handle **User**, **User activity** and **Library**.  
+**User** can only open / delete  **account** and make request about **Loans**, **Reservation** and see **Books** in the **Library**  
