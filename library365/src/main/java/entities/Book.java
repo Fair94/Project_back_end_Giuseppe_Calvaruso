@@ -6,7 +6,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "book")
-public class Book {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Book {
     @Id
     @GeneratedValue
     @Column(name="book_id")
