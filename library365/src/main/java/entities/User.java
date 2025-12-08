@@ -3,6 +3,7 @@ package entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -10,29 +11,45 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue
-    private UUID id;
+    @Column(name="user_id")
+    private UUID user_id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "email",unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password",nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name="firstName",nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name = "lastName" ,nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
-    private LocalDate registration;
+    @Column(name="registration_date",nullable = false)
+    private LocalDateTime registration;
 
-    @Column
+    @Column(name ="url_pic")
     private String url_pic;
 
-    public UUID getId() {
-        return id;
+    public User(String email, String password, String firstName, String lastName, LocalDateTime registration, String url_pic) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.registration = registration;
+        this.url_pic = url_pic;
     }
+
+    public User() {
+
+    }
+
+    public UUID getId() {
+        return user_id;
+    }
+
+
 
 
 
@@ -58,11 +75,11 @@ public class User {
         this.firstName = firstName;
     }
 
-    public LocalDate getRegistration() {
+    public LocalDateTime getRegistration() {
         return registration;
     }
 
-    public void setRegistration(LocalDate registration) {
+    public void setRegistration(LocalDateTime registration) {
         this.registration = registration;
     }
 
