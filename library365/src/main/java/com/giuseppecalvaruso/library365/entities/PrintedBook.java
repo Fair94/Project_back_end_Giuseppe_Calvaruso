@@ -1,4 +1,4 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,13 +8,14 @@ import jakarta.persistence.Table;
 @Table(name = "printed_book")
 public class PrintedBook extends Book {
 
-    @Column (name ="position")
+    @Column (name ="position", nullable = false)
     private String position;
 
-    @Column(name = "total_copies")
+    @Column(name = "total_copies",nullable = false)
+
     private int totalCopies;
 
-    @Column(name = "available_copies")
+    @Column(name = "available_copies",nullable = false)
     private int availableCopies;
 
 

@@ -1,4 +1,4 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.*;
 
@@ -20,12 +20,40 @@ public class Loan {
     @Column(name = "due_date",nullable = false)
     private LocalDate due_date;
 
-    @Column(name="return_date",nullable = false)
+    @Column(name="return_date")
     private LocalDateTime return_date;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private LoanStatus status;
+
+
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable = false)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @ManyToOne
+    @JoinColumn(name="book_id", nullable = false)
+    private Book book;
+
+
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
     public Loan(LocalDateTime loan_date, LocalDate due_date, LocalDateTime return_date, LoanStatus status) {
         this.loan_date = loan_date;

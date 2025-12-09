@@ -1,4 +1,4 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.*;
 
@@ -12,8 +12,8 @@ public class Role {
     @Column(name="role_id")
     private UUID role_id;
 
-    @Column(name="name")
-    String name;
+    @Column(name="name", nullable = false, unique = true)
+    private String name;
 
     public Role(String name) {
         this.name = name;

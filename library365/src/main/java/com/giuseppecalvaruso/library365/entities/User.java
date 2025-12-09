@@ -1,18 +1,24 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue
     @Column(name="user_id")
     private UUID user_id;
+
+
+
+
+
 
     @Column(name = "email",unique = true, nullable = false)
     private String email;
@@ -31,6 +37,31 @@ public class User {
 
     @Column(name ="url_pic")
     private String url_pic;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id")
+    )
+
+    private List<Role> roles = new ArrayList<>();
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+    @OneToMany(mappedBy = "user")
+    private List<Loan> loans = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Reservation> reservations = new ArrayList<>();
+
+
+
 
     public User(String email, String password, String firstName, String lastName, LocalDateTime registration, String url_pic) {
         this.email = email;

@@ -1,11 +1,15 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.*;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "author")
+@Table (
+        name = "author",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"firstName","lastName"})
+)
+
 public class Author {
     @Id
     @GeneratedValue

@@ -1,4 +1,4 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 
 import jakarta.persistence.*;
@@ -20,6 +20,34 @@ public class Reservation {
     @Column(name="status", nullable = false)
     @Enumerated (EnumType.STRING)
     private ReservationStatus status;
+
+
+    @ManyToOne
+    @JoinColumn(name="user_id", unique = true)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
+
+
+    @ManyToOne
+    @JoinColumn(name="book_id", unique = true)
+    private Book book;
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
     public Reservation(LocalDateTime created_at, ReservationStatus status) {
         this.created_at = created_at;

@@ -1,8 +1,7 @@
-package DTO;
+package com.giuseppecalvaruso.library365.DTO;
 
-import entities.ReservationStatus;
+import com.giuseppecalvaruso.library365.entities.ReservationStatus;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record ReservationDTO(LocalDateTime created_at, ReservationStatus status) {

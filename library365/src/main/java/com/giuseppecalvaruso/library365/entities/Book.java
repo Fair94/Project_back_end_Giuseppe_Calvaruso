@@ -1,7 +1,9 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,17 +18,35 @@ public abstract class Book {
     @Column(name ="title", nullable = false)
     private String title;
 
-    @Column(name="ISBN", nullable = false)
+    @Column(name="ISBN", nullable = false, unique = true)
     private String ISBN;
 
-    @Column(name="description")
+    @Column(name="description", length=1000)
     private String description;
 
-    @Column(name ="publication_year")
+    @Column(name ="publication_year", nullable = false)
     private int publication_year;
 
     @Column(name="cover_url")
     private String cover_url;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "books_authors",
+            joinColumns = @JoinColumn(name="book_id"),
+            inverseJoinColumns = @JoinColumn(name="author_id")
+    )
+    private List<Author> authors = new ArrayList<>();
+
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
+    }
 
     public Book(String title, String ISBN, String description, int publication_year, String cover_url) {
         this.title = title;
@@ -38,6 +58,9 @@ public abstract class Book {
 
     public Book() {
 
+    }
+    public UUID getBook_id() {
+        return book_id;
     }
 
     public String getTitle() {
@@ -90,4 +113,6 @@ public abstract class Book {
                 ", ISBN='" + ISBN + '\'' +
                 '}';
     }
+
+
 }

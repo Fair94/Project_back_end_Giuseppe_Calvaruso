@@ -1,8 +1,7 @@
-package DTO;
+package com.giuseppecalvaruso.library365.DTO;
 
-import entities.LoanStatus;
+import com.giuseppecalvaruso.library365.entities.LoanStatus;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record LoanDTO(LocalDateTime loan_date, LocalDateTime due_date, LocalDateTime return_date, LoanStatus status) {

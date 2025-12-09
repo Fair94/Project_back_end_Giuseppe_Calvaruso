@@ -1,6 +1,6 @@
-package repositories;
+package com.giuseppecalvaruso.library365.repositories;
 
-import entities.PrintedBook;
+import com.giuseppecalvaruso.library365.entities.PrintedBook;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

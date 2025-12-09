@@ -52,3 +52,53 @@ We can have 3 different type of User: Admin, Librarian and User.
 **Admin**  can handle **Librarian**, **User**, **User activity** and the **Library**.  
 **Librarian** can handle **User**, **User activity** and **Library**.  
 **User** can only open / delete  **account** and make request about **Loans**, **Reservation** and see **Books** in the **Library**  
+
+## ENTITY
+The project is built around 8 main entities:  
+1)  **User**
+2)   **Loan**  
+3)   **Role**
+4)   **Reservation**
+5)   **Book**  
+6)   **Printed_Book**  
+7)   **E_Book**  
+8)   **Authors**
+
+In the ERD as visible, there are 2 junction table. These table could have been created physically 
+using following sql code :
+```sql
+CREATE TABLE users_roles (
+    user_id UUID NOT NULL,
+    role_id UUID NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+CREATE TABLE books_authors (
+    book_id UUID NOT NULL,
+    author_id UUID NOT NULL,
+    PRIMARY KEY (book_id, author_id),
+    FOREIGN KEY (book_id) REFERENCES book(book_id),
+    FOREIGN KEY (author_id) REFERENCES author(author_id)
+);
+
+```
+
+Due to the simplicity of the project, I preferred to use JPA  Manytomany annotations. 
+In this way I followed the project guidelines regarding relationship. 
+
+In the ERD is also showed an Inheritance between three entities:  
+1)  **Book**  
+2)  **Printed_Book**  
+3)  **E_Book**  
+
+Essentially, **Book** is an abstract class extended by **Printed_Book** (physical book of the library)
+and **E_Book** (digital copy). I've used a **JOINED** approach, where the children have some common field with father.
+This approach avoid **Null** field in table.
+
+Every entity has its own attribute and constraints in order to have a smooth, logic and meaningful workflow.
+
+![PG ADMIN ERD](img/pgAdmin_ERD.png)  
+In this file you can see how all the code I wrote about entities has translated in the following ERD created by pgAdmin.  
+It was created at first glance (how lucky, without error ) and it is similar to the one I designed in the beginning  

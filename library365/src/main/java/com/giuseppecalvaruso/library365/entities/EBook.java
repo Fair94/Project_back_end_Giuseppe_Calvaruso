@@ -1,17 +1,17 @@
-package entities;
+package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Ebook")
+@Table(name = "ebook")
 public class EBook extends Book {
 
-    @Column(name = "fileUrl")
+    @Column(name = "file_url",nullable = false)
     private String fileUrl;
 
-    @Column(name="licenseType")
+    @Column(name="license_Type",nullable = false)
     private String licenseType;
 
 

@@ -1,4 +1,4 @@
-package DTO;
+package com.giuseppecalvaruso.library365.DTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
