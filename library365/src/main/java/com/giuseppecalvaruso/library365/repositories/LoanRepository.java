@@ -1,10 +1,12 @@
 package com.giuseppecalvaruso.library365.repositories;
 
-import com.giuseppecalvaruso.library365.entities.PrintedBook;
+import com.giuseppecalvaruso.library365.entities.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
+
+
 @Repository
-public interface PrintedBookInterfaces extends JpaRepository<PrintedBook, UUID> {
+public interface LoanRepository extends JpaRepository<Loan, UUID> {
 }

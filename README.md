@@ -8,8 +8,7 @@ capable of doing all the operation of a modern library :
 
 - **Book Handling**  
 - **Book Tracking**  
-- **Loan**  
-- **Sales** 
+- **Loan**
 - **User handling** 
 
 The app was developed using Spring Boot as the main backend framework. As database, PostgresSQL was used.
