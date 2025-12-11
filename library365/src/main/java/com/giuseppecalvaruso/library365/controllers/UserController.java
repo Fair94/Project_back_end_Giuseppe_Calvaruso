@@ -38,7 +38,7 @@ public class UserController {
         return null;
     }
 
-    @DeleteMapping("/user_id")
+    @DeleteMapping("/{user_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable("user_id") UUID user_id) {
 

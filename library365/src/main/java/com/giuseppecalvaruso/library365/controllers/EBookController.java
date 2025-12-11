@@ -21,7 +21,7 @@ public class EBookController {
         return null;
     }
 
-    @GetMapping("/book_id")
+    @GetMapping("/{book_id}")
     public EBook getEBookById(@PathVariable("book_id") UUID book_id){
         return null;
     }
@@ -32,12 +32,12 @@ public class EBookController {
         return null;
     }
 
-    @PutMapping("/book_id")
+    @PutMapping("/{book_id}")
     public EBook updateEBook(@PathVariable("book_id") UUID book_id, @RequestBody NewEBookResponseDTO body){
         return null;
     }
 
-    @DeleteMapping("/book_id")
+    @DeleteMapping("/{book_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEBook(@PathVariable("book_id") UUID book_id){
 

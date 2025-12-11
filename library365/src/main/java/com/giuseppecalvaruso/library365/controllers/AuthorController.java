@@ -1,12 +1,11 @@
 package com.giuseppecalvaruso.library365.controllers;
 
+import com.giuseppecalvaruso.library365.DTO.AuthorDTO;
 import com.giuseppecalvaruso.library365.entities.Author;
 import com.giuseppecalvaruso.library365.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,4 +25,21 @@ public class AuthorController {
     public Author getAuthorById(@RequestParam UUID author_id){
         return null;
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Author createAuthor(@RequestBody AuthorDTO body){
+        return null;
+    }
+
+    @PutMapping("/{author_id}")
+    public Author updateAuthor(@PathVariable ("author_id")UUID author_id, @RequestBody AuthorDTO body){
+        return null;
+    }
+
+    @DeleteMapping("/{author_id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAuthorById(@PathVariable("author_id") UUID author_id){}
+
+
 }
