@@ -1,5 +1,6 @@
 package com.giuseppecalvaruso.library365.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class User {
     @Column(name = "email",unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(name = "password",nullable = false)
     private String password;
 
@@ -56,9 +58,12 @@ public class User {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Loan> loans = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservations = new ArrayList<>();
 

@@ -101,3 +101,15 @@ Every entity has its own attribute and constraints in order to have a smooth, lo
 ![PG ADMIN ERD](img/pgAdmin_ERD.png)  
 In this file you can see how all the code I wrote about entities has translated in the following ERD created by pgAdmin.  
 It was created at first glance (how lucky, without error ) and it is similar to the one I designed in the beginning  
+
+### User
+User was designed with some "fields".
+This fields contributes on creating a full functionally profile. 
+
+### Normalization : Entity, DTO, Services, Controller
+Every Entity, DTO, Services and Controller was normalized following best practices.  
+The best practices includes using of annotation like ```@NotBlank```, ```@Size``` and so on . This ensures no sensible information leaks outside and grant consistency 
+
+## REST API's : CONTROLLER, REPOSITORY AND SERVICE 
+This application exposes main functionality using CRUD operations (POST, GET,PATCH, PUT, DELETE ) taken from repositories and implementing it with other useful method.
+Every entity, where possible, has its own Controller and its own Service. This fragmentation enhance modularity and code reusability, enhancing loose coupling

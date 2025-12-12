@@ -2,9 +2,11 @@ package com.giuseppecalvaruso.library365.controllers;
 
 
 import com.giuseppecalvaruso.library365.DTO.NewUserResponseDTO;
+import com.giuseppecalvaruso.library365.DTO.UpdateProfileImageDTO;
 import com.giuseppecalvaruso.library365.DTO.UserDTO;
 import com.giuseppecalvaruso.library365.entities.User;
 import com.giuseppecalvaruso.library365.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,14 +32,23 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public NewUserResponseDTO createUser(@RequestBody UserDTO body) {
+    public NewUserResponseDTO createUser( @Valid @RequestBody UserDTO body) {
         return this.userService.save(body);
     }
 
-    @PutMapping("{/user_id}")
-    public User updateUserById(@PathVariable("user_id") UUID user_id, @RequestBody UserDTO body) {
+    @PutMapping("/{user_id}")
+    public User updateUserById(@PathVariable("user_id") UUID user_id, @Valid @RequestBody UserDTO body) {
         return this.userService.findUserByIdAndUpdate(user_id,body);
     }
+
+
+    @PatchMapping("/{user_id}/profile-image")
+    public User updateProfileImage(@PathVariable("user_id") UUID user_id,
+                                   @Valid @RequestBody UpdateProfileImageDTO body) {
+        return this.userService.updateProfileImage(user_id,body.url_pic());
+    }
+
+
 
     @DeleteMapping("/{user_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,14 +1,16 @@
 package com.giuseppecalvaruso.library365.services;
 
 import com.giuseppecalvaruso.library365.DTO.NewUserResponseDTO;
+import com.giuseppecalvaruso.library365.DTO.UpdateProfileImageDTO;
 import com.giuseppecalvaruso.library365.DTO.UserDTO;
 import com.giuseppecalvaruso.library365.entities.User;
 import com.giuseppecalvaruso.library365.exceptions.NotFoundException;
 import com.giuseppecalvaruso.library365.exceptions.ValidationException;
 import com.giuseppecalvaruso.library365.repositories.UserRepository;
-import org.apache.coyote.BadRequestException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
@@ -55,5 +57,13 @@ public class UserService {
     public void findByIdAndDelete(UUID user_id) {
         User foundUser = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
         this.userRepository.delete(foundUser);
+    }
+
+
+    public User updateProfileImage(UUID user_id, String url_pic) {
+        User user = this.getUserById(user_id);
+        String normalizedUrl = url_pic.trim();
+        user.setUrl_pic(normalizedUrl);
+        return this.userRepository.save(user);
     }
 }
