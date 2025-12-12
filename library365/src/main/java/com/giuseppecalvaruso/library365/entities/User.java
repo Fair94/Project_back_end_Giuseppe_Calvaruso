@@ -47,6 +47,8 @@ public class User {
 
     private List<Role> roles = new ArrayList<>();
 
+
+
     public List<Role> getRoles() {
         return roles;
     }
