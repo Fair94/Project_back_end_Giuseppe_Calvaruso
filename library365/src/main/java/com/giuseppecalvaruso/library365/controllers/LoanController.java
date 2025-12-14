@@ -33,13 +33,13 @@ public class LoanController {
         return null;
     }
 
-    @PutMapping("/{user_id}/{loan_id}")
+    @PutMapping("/{loan_id}")
     public Loan updateLoanById(@PathVariable UUID user_id,
                                @PathVariable UUID loan_id,@RequestBody NewLoanResponseDTO body){
         return null;
     }
 
-    @DeleteMapping("/{user_id}/{loan_id}")
+    @DeleteMapping("/{loan_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleLoanByID(@PathVariable("user_id") UUID user_id,@PathVariable UUID loan_id){
 

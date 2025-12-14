@@ -30,14 +30,14 @@ public class ReservationController {
         return null;
     }
 
-    @PutMapping("/{user_id}/{reservation_id}")
+    @PutMapping("/{reservation_id}")
     public Reservation updateReservationByID(@PathVariable UUID user_id,
                                              @PathVariable UUID reservation_id,
                                              @RequestBody NewReservationResponseDTO reservation){
         return null;
     }
 
-    @DeleteMapping("/{user_id}/{reservation_id}")
+    @DeleteMapping("/{reservation_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservationByID(@PathVariable("user_id") UUID user_id,
                                       @PathVariable UUID reservation_id){
