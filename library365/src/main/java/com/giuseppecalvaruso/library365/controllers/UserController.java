@@ -9,6 +9,7 @@ import com.giuseppecalvaruso.library365.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class UserController {
     }
 
 
-
+//    @PreAuthorize(hasAnyAuthorization("ADMIN"))
     @DeleteMapping("/{user_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable("user_id") UUID user_id) {

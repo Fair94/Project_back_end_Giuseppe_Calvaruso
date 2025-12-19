@@ -63,8 +63,8 @@ public class AuthorService {
 
     public void findByIDAndDelete(UUID author_id){
         Author foundAuthor = authorRepository.findById(author_id).orElseThrow(()-> new NotFoundException(author_id));
-        if (printedBookRepository.existsByAuthors_AuthorId(author_id)
-                || eBookRepository.existsByAuthors_AuthorId(author_id)) {
+        if (printedBookRepository.existsByAuthors_Id(author_id)
+                || eBookRepository.existsByAuthors_Id(author_id)) {
             throw new ValidationException("Cannot delete author: linked to one or more books");
         }
         authorRepository.delete(foundAuthor);

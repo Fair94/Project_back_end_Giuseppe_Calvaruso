@@ -91,4 +91,8 @@ public class UserService {
         user.setUrl_pic(normalizedUrl);
         return this.userRepository.save(user);
     }
+
+    public User getUserByIdWithRoles(UUID user_id) {
+        return userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
+    }
 }

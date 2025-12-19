@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 @Repository
 public interface PrintedBookRepository extends JpaRepository<PrintedBook, UUID> {
-    boolean existsByAuthors_AuthorId(UUID author_id);
+    boolean existsByAuthors_Id(UUID author_id);
 
 }

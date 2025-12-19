@@ -18,7 +18,7 @@ public class EBookController {
 
     @GetMapping
     public List<EBook> getAllEBooks(){
-        return null;
+        return this.EBookService.getAllEBooks();
     }
 
     @GetMapping("/{book_id}")
