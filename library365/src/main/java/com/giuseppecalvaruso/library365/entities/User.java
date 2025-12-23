@@ -146,4 +146,8 @@ public class User {
                 ", registration=" + registration +
                 '}';
     }
+
+    public String getPassword() {
+        return password;
+    }
 }
