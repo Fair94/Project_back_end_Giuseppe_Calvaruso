@@ -26,6 +26,11 @@ public class EBookController {
         return null;
     }
 
+    @GetMapping("/{author}")
+    public EBook getEBookByAuthor(@PathVariable("author") String author){
+        return null;
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EBook createEBook(@RequestBody NewEBookResponseDTO body){

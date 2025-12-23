@@ -13,7 +13,7 @@ import java.util.UUID;
 @Component
 public class JWTTools {
 
-    private String secret;
+    private  String secret;
 
     public JWTTools(@Value("${jwt.secret}")String secret  ) {
         this.secret = secret;

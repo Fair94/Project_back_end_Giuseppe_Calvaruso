@@ -21,6 +21,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
     @GetMapping
     public List<User> getUsers() {
         return this.userService.getUsers();
@@ -31,18 +32,20 @@ public class UserController {
         return this.userService.getUserById(user_id);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public NewUserResponseDTO createUser( @Valid @RequestBody UserDTO body) {
         return this.userService.save(body);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
     @PutMapping("/{user_id}")
     public User updateUserById(@PathVariable("user_id") UUID user_id, @Valid @RequestBody UserDTO body) {
         return this.userService.findUserByIdAndUpdate(user_id,body);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
     @PatchMapping("/{user_id}/profile-image")
     public User updateProfileImage(@PathVariable("user_id") UUID user_id,
                                    @Valid @RequestBody UpdateProfileImageDTO body) {
@@ -50,7 +53,7 @@ public class UserController {
     }
 
 
-//    @PreAuthorize(hasAnyAuthorization("ADMIN"))
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
     @DeleteMapping("/{user_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable("user_id") UUID user_id) {
