@@ -11,9 +11,11 @@ import com.giuseppecalvaruso.library365.repositories.RoleRepository;
 import com.giuseppecalvaruso.library365.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +26,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -46,17 +51,35 @@ public class UserService {
         if (firstName.length()<3||lastName.length()<3)
             throw new ValidationException("First name and last name must be of length 3 characters");
 
-        User newUser = new User(email,body.password(),
+        String encodedPassword = passwordEncoder.encode(body.password());
+
+        User newUser = new User(email,
+                                encodedPassword,
                                 firstName,lastName,
                                 LocalDateTime.now(),
                                 urlPic);
 
+        if(userRepository.count()==0){
+            Role superAdmin = roleRepository.findByName("SUPERADMIN")
+            .orElseThrow(()-> new RuntimeException("Role SUPERADMIN not found, sql run, check application properties"));
+            newUser.getRoles().add(superAdmin);
+        }
+
+        else if(email.toLowerCase().endsWith("@library365.it")){
+            Role librarian = roleRepository.findByName("LIBRARIAN")
+                    .orElseThrow(() -> new RuntimeException("Role LIBRARIAN not found, check application properties , check sql file "));
+            newUser.getRoles().add(librarian);
+        }
+
+        else {
         Role defaultRole = roleRepository.findByName("USER")
-                .orElseGet(()-> roleRepository.save(new Role("USER")));
+                .orElseThrow(() -> new RuntimeException("Role USER not found, sql run, check application properties"));
+        newUser.getRoles().add(defaultRole);}
 
-        newUser.getRoles().add(defaultRole);
+        
+
+
         User userSaved = userRepository.save(newUser);
-
         return  new NewUserResponseDTO(userSaved.getId());
     }
 
