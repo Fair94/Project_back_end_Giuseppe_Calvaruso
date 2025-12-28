@@ -37,17 +37,17 @@ public class User {
     @Column(name="registration_date",nullable = false)
     private LocalDateTime registration;
 
-    @Column(name ="url_pic")
+    @Column(name ="url_pic", nullable = true)
     private String url_pic;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id")
     )
-
     private List<Role> roles = new ArrayList<>();
+
 
 
 

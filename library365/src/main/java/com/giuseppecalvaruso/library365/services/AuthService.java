@@ -4,6 +4,7 @@ import com.giuseppecalvaruso.library365.DTO.AuthResponse;
 import com.giuseppecalvaruso.library365.DTO.LoginDTO;
 import com.giuseppecalvaruso.library365.entities.User;
 import com.giuseppecalvaruso.library365.exceptions.UnauthorizedException;
+import com.giuseppecalvaruso.library365.exceptions.ValidationException;
 import com.giuseppecalvaruso.library365.repositories.UserRepository;
 import com.giuseppecalvaruso.library365.security.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
 public AuthResponse authenticate(LoginDTO body){
+
+    if(body.email() == null || body.password() == null || body.email().isBlank() || body.password().isBlank())
+        throw new ValidationException("Missing required fields");
+
+    String email = body.email().trim().toLowerCase();
     User user = userRepository.findByEmail(body.email()).orElseThrow(()->new UnauthorizedException("Credenziali errate"));
 
     if(!passwordEncoder.matches(body.password(),user.getPassword())){

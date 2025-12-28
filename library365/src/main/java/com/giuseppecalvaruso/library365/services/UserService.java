@@ -47,10 +47,17 @@ public class UserService {
         if(body.firstName() ==null || body.lastName() ==null || body.email() ==null || body.password() ==null)
             throw new ValidationException("Missing required fields");
 
+        if (body.user_id() != null)
+            throw new ValidationException("user_id must not be provided");
+
+
+        if (body.registration() != null)
+            throw new ValidationException("registration must not be provided");
+
 
         String firstName = body.firstName().trim();
         String lastName = body.lastName().trim();
-        String email = body.email().trim();
+        String email = body.email().trim().toLowerCase();
         String urlPic = (body.url_pic()== null ||body.url_pic().isBlank()) ? null : body.url_pic().trim();
 
 
@@ -59,6 +66,8 @@ public class UserService {
             throw new ValidationException("First name and last name must be of length 3 characters");
 
         String encodedPassword = passwordEncoder.encode(body.password());
+        if (userRepository.existsEmail(email))
+            throw new ValidationException("Email already in use");
 
         User newUser = new User(email,
                                 encodedPassword,
@@ -66,14 +75,17 @@ public class UserService {
                                 LocalDateTime.now(),
                                 urlPic);
 
-        if (userRepository.count()==0){
+
+        if (email.equals("superadmin@library365.it")) {
             newUser.getRoles().add(getOrCreateRole("SUPERADMIN"));
 
-        } else if(email.toLowerCase().endsWith("@library365.it")){
+        } else if (email.endsWith("@library365.it")) {
             newUser.getRoles().add(getOrCreateRole("LIBRARIAN"));
+
         } else {
             newUser.getRoles().add(getOrCreateRole("USER"));
         }
+
 
 
 
@@ -82,20 +94,22 @@ public class UserService {
     }
 
     public User findUserByIdAndUpdate(UUID user_id, UserDTO body) {
-        User foundUser = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
+        User foundUser = userRepository.findById(user_id)
+                .orElseThrow(() -> new NotFoundException(user_id));
 
+        if (body.firstName() != null) foundUser.setFirstName(body.firstName().trim());
+        if (body.lastName() != null) foundUser.setLastName(body.lastName().trim());
 
-        if(body.firstName()!= null) foundUser.setFirstName(body.firstName());
-        if(body.lastName()!=null) foundUser.setLastName(body.lastName());
+        if (body.email() != null) foundUser.setEmail(body.email().trim().toLowerCase());
 
-        foundUser.setRegistration(body.registration());
-
-        if(body.email()!=null) foundUser.setEmail(body.email());
-        if(body.password()!=null && !body.password().isBlank())
+        if (body.password() != null && !body.password().isBlank())
             foundUser.setPassword(passwordEncoder.encode(body.password()));
+
+
 
         return this.userRepository.save(foundUser);
     }
+
 
     public void findByIdAndDelete(UUID user_id) {
         User foundUser = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
