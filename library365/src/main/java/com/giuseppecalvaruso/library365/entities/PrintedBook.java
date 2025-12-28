@@ -19,8 +19,8 @@ public class PrintedBook extends Book {
     private int availableCopies;
 
 
-    public PrintedBook(String title, String ISBN, String description, int publication_year, String cover_url, String position, int totalCopies, int availableCopies) {
-        super(title, ISBN, description, publication_year, cover_url);
+    public PrintedBook(String title, String ISBN, String description, int publication_year, String position, int totalCopies, int availableCopies) {
+        super(title, ISBN, description, publication_year);
         this.position = position;
         this.totalCopies = totalCopies;
         this.availableCopies = availableCopies;

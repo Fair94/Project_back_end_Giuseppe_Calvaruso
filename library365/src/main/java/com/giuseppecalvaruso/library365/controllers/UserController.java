@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @GetMapping
     public List<User> getUsers() {
         return this.userService.getUsers();
@@ -32,28 +33,28 @@ public class UserController {
         return this.userService.getUserById(user_id);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public NewUserResponseDTO createUser( @Valid @RequestBody UserDTO body) {
         return this.userService.save(body);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PutMapping("/{user_id}")
     public User updateUserById(@PathVariable("user_id") UUID user_id, @Valid @RequestBody UserDTO body) {
         return this.userService.findUserByIdAndUpdate(user_id,body);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
-    @PatchMapping("/{user_id}/profile-image")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN','USER')")
+    @PatchMapping(value = "/{user_id}/profile_image", consumes = "multipart/form-data")
     public User updateProfileImage(@PathVariable("user_id") UUID user_id,
-                                   @Valid @RequestBody UpdateProfileImageDTO body) {
-        return this.userService.updateProfileImage(user_id,body.url_pic());
+                                  @RequestParam("profile_image") MultipartFile profileImage) {
+        return this.userService.updateProfileImage(user_id,profileImage);
     }
 
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @DeleteMapping("/{user_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable("user_id") UUID user_id) {

@@ -2,7 +2,7 @@ package com.giuseppecalvaruso.library365.entities;
 
 
 import jakarta.persistence.*;
-
+import com.giuseppecalvaruso.library365.ENUM.ReservationStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ public class Reservation {
 
 
     @ManyToOne
-    @JoinColumn(name="user_id", unique = true)
+    @JoinColumn(name="user_id", nullable = false)
     private User user;
 
     public User getUser() {
@@ -38,7 +38,7 @@ public class Reservation {
 
 
     @ManyToOne
-    @JoinColumn(name="book_id", unique = true)
+    @JoinColumn(name="book_id", nullable = false)
     private Book book;
 
     public Book getBook() {

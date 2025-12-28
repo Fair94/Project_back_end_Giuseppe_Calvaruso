@@ -1,5 +1,6 @@
 package com.giuseppecalvaruso.library365.services;
 
+import com.giuseppecalvaruso.library365.API.CloudinaryService;
 import com.giuseppecalvaruso.library365.DTO.NewUserResponseDTO;
 import com.giuseppecalvaruso.library365.DTO.UpdateProfileImageDTO;
 import com.giuseppecalvaruso.library365.DTO.UserDTO;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDateTime;
@@ -30,6 +32,8 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -43,10 +47,13 @@ public class UserService {
         if(body.firstName() ==null || body.lastName() ==null || body.email() ==null || body.password() ==null)
             throw new ValidationException("Missing required fields");
 
+
         String firstName = body.firstName().trim();
         String lastName = body.lastName().trim();
         String email = body.email().trim();
         String urlPic = (body.url_pic()== null ||body.url_pic().isBlank()) ? null : body.url_pic().trim();
+
+
 
         if (firstName.length()<3||lastName.length()<3)
             throw new ValidationException("First name and last name must be of length 3 characters");
@@ -59,24 +66,15 @@ public class UserService {
                                 LocalDateTime.now(),
                                 urlPic);
 
-        if(userRepository.count()==0){
-            Role superAdmin = roleRepository.findByName("SUPERADMIN")
-            .orElseThrow(()-> new RuntimeException("Role SUPERADMIN not found, sql run, check application properties"));
-            newUser.getRoles().add(superAdmin);
+        if (userRepository.count()==0){
+            newUser.getRoles().add(getOrCreateRole("SUPERADMIN"));
+
+        } else if(email.toLowerCase().endsWith("@library365.it")){
+            newUser.getRoles().add(getOrCreateRole("LIBRARIAN"));
+        } else {
+            newUser.getRoles().add(getOrCreateRole("USER"));
         }
 
-        else if(email.toLowerCase().endsWith("@library365.it")){
-            Role librarian = roleRepository.findByName("LIBRARIAN")
-                    .orElseThrow(() -> new RuntimeException("Role LIBRARIAN not found, check application properties , check sql file "));
-            newUser.getRoles().add(librarian);
-        }
-
-        else {
-        Role defaultRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new RuntimeException("Role USER not found, sql run, check application properties"));
-        newUser.getRoles().add(defaultRole);}
-
-        
 
 
         User userSaved = userRepository.save(newUser);
@@ -91,13 +89,10 @@ public class UserService {
         if(body.lastName()!=null) foundUser.setLastName(body.lastName());
 
         foundUser.setRegistration(body.registration());
-        if(body.url_pic()!= null){
-            String urlPic = body.url_pic().trim();
-            foundUser.setUrl_pic(urlPic.isBlank()? null:urlPic);
 
-        }
-        foundUser.setEmail(body.email());
-        foundUser.setPassword(body.password());
+        if(body.email()!=null) foundUser.setEmail(body.email());
+        if(body.password()!=null && !body.password().isBlank())
+            foundUser.setPassword(passwordEncoder.encode(body.password()));
 
         return this.userRepository.save(foundUser);
     }
@@ -108,14 +103,19 @@ public class UserService {
     }
 
 
-    public User updateProfileImage(UUID user_id, String url_pic) {
+    public User updateProfileImage(UUID user_id, MultipartFile file) {
         User user = this.getUserById(user_id);
-        String normalizedUrl = url_pic.trim();
-        user.setUrl_pic(normalizedUrl);
+        String imageUrl = cloudinaryService.uploadImage(file);
+        user.setUrl_pic(imageUrl);
         return this.userRepository.save(user);
     }
 
     public User getUserByIdWithRoles(UUID user_id) {
-        return userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
+        return userRepository.findIdWithRoles(user_id).orElseThrow(() -> new NotFoundException(user_id));
+    }
+
+    private Role getOrCreateRole(String roleName){
+        return roleRepository.findByName(roleName)
+                .orElseGet(()-> roleRepository.save(new Role(roleName)));
     }
 }

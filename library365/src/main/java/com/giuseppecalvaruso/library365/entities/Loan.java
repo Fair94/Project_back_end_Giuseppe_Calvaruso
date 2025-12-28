@@ -1,7 +1,7 @@
 package com.giuseppecalvaruso.library365.entities;
 
 import jakarta.persistence.*;
-
+import com.giuseppecalvaruso.library365.ENUM.LoanStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;

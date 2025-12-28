@@ -1,11 +1,17 @@
 package com.giuseppecalvaruso.library365.repositories;
 
+import com.giuseppecalvaruso.library365.ENUM.ReservationStatus;
+import com.giuseppecalvaruso.library365.entities.Book;
 import com.giuseppecalvaruso.library365.entities.Reservation;
+import com.giuseppecalvaruso.library365.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
-@Repository
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
+
+    List<Reservation> findByUser(User user);
+
+    boolean existsByUserAndBookAndStatus(User user, Book book, ReservationStatus status);
 }

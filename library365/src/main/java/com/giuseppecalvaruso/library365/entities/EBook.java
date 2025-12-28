@@ -15,8 +15,8 @@ public class EBook extends Book {
     private String licenseType;
 
 
-    public EBook(String title, String ISBN, String description, int publication_year, String cover_url, String fileUrl, String licenseType) {
-        super(title, ISBN, description, publication_year, cover_url);
+    public EBook(String title, String ISBN, String description, int publication_year, String fileUrl, String licenseType) {
+        super(title, ISBN, description, publication_year);
         this.fileUrl = fileUrl;
         this.licenseType = licenseType;
     }

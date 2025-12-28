@@ -2,6 +2,7 @@ package com.giuseppecalvaruso.library365.services;
 
 import com.giuseppecalvaruso.library365.DTO.EBookDTO;
 import com.giuseppecalvaruso.library365.DTO.NewEBookResponseDTO;
+import com.giuseppecalvaruso.library365.entities.Author;
 import com.giuseppecalvaruso.library365.entities.Book;
 import com.giuseppecalvaruso.library365.entities.EBook;
 import com.giuseppecalvaruso.library365.exceptions.EBookNotFoundException;
@@ -45,7 +46,6 @@ public class EBookService {
                 ISBN,
                 body.description(),
                 body.publication_year(),
-                body.cover_url(),
                 body.fileUrl(),
                 body.licenseType()
         );
@@ -62,10 +62,7 @@ public class EBookService {
         if (body.ISBN()!= null) foundEbook.setISBN(body.ISBN());
         if (body.description()!= null) foundEbook.setDescription(body.description());
 
-        if (body.cover_url()!= null){
-            String url_picture = body.cover_url().trim();
-            foundEbook.setCover_url(url_picture.isBlank()?null:url_picture);
-        }
+
 
         if(body.fileUrl()!= null){
             String url_file = body.fileUrl().trim();
@@ -82,15 +79,7 @@ public class EBookService {
         this.ebookRepository.delete(foundEbook);
     }
 
-    public EBook updateEbookImage(UUID book_id, String cover_url){
-        if(cover_url==null||cover_url.trim().isBlank()){
-            throw new ValidationException("Cover url is required");
-        }
-        EBook ebook = this.getEBookById(book_id);
-        String normalized_url = cover_url.trim();
-        ebook.setCover_url(normalized_url);
-        return this.ebookRepository.save(ebook);
-    }
+
 
     public EBook updateEbookUrlFile(UUID book_id, String file_url){
         if (file_url==null || file_url.trim().isBlank() ){
@@ -107,6 +96,7 @@ public class EBookService {
             throw new ValidationException("Author name or Surname are required");
 
         }
+
 
         return ebookRepository.findByAuthorNameOrSurnameLike(nameSurnameAuthor.trim());
 
@@ -127,6 +117,10 @@ public class EBookService {
         String normalized_ISBN = ISBN.trim();
 
         return ebookRepository.findByISBNIgnoreCase(normalized_ISBN).orElseThrow(()-> new EBookNotFoundException(ISBN));
+    }
+
+    public List<EBook> findByAuthor(UUID author_id){
+        return ebookRepository.findByAuthors_Id(author_id);
     }
 
 

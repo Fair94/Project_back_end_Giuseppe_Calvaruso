@@ -20,8 +20,7 @@ public record EBookDTO(UUID book_id,
                        @NotBlank(message="publication year is required")
                        int publication_year,
 
-                       @Size(max = 2048, message="File url is too long")
-                       String cover_url,
+
 
                        @Size(max = 2048,message = "File url is too long")
                        String fileUrl,

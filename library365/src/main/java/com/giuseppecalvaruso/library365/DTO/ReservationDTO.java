@@ -1,9 +1,15 @@
 package com.giuseppecalvaruso.library365.DTO;
 
-import com.giuseppecalvaruso.library365.entities.ReservationStatus;
+import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
 
-public record ReservationDTO(LocalDateTime created_at, ReservationStatus status) {
+public record ReservationDTO(
+        @NotNull(message= "user_id required")
+        UUID user_id,
+        @NotNull(message= "book_id required")
+        UUID book_id
+
+) {
 
 }

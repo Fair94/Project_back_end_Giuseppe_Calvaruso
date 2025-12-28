@@ -51,14 +51,12 @@ public class AuthorService {
         return new NewAuthorResponseDTO(authorSaved.getId());
     }
 
-    public Author findAuthorByID( UUID author_id, AuthorDTO body) {
-        Author foundAuthor = authorRepository.findById(author_id).orElseThrow(()-> new NotFoundException(author_id));
+    public Author findAuthorByID( UUID author_id) {
+       return authorRepository.findById(author_id).orElseThrow(()-> new NotFoundException(author_id));
 
-        if(body.firstName()!=null) foundAuthor.setFirstName(body.firstName().trim());
-        if(body.lastName()!=null) foundAuthor.setLastName(body.lastName().trim());
-        if(body.bio()!=null) foundAuthor.setBio(body.bio().trim());
 
-        return this.authorRepository.save(foundAuthor);
+
+
     }
 
     public void findByIDAndDelete(UUID author_id){

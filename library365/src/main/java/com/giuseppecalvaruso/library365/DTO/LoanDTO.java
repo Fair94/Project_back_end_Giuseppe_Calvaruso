@@ -1,8 +1,13 @@
 package com.giuseppecalvaruso.library365.DTO;
 
-import com.giuseppecalvaruso.library365.entities.LoanStatus;
+import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
 
-public record LoanDTO(LocalDateTime loan_date, LocalDateTime due_date, LocalDateTime return_date, LoanStatus status) {
+public record LoanDTO(
+        @NotNull(message = "user_id is required")
+        UUID user_id,
+
+        @NotNull(message = "book_id is required")
+        UUID book_id) {
 }
