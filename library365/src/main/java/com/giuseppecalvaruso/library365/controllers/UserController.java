@@ -2,18 +2,19 @@ package com.giuseppecalvaruso.library365.controllers;
 
 
 import com.giuseppecalvaruso.library365.DTO.NewUserResponseDTO;
-import com.giuseppecalvaruso.library365.DTO.UpdateProfileImageDTO;
 import com.giuseppecalvaruso.library365.DTO.UserDTO;
 import com.giuseppecalvaruso.library365.entities.User;
 import com.giuseppecalvaruso.library365.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -28,6 +29,7 @@ public class UserController {
         return this.userService.getUsers();
     }
 
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @GetMapping("/{user_id}")
     public User getUser(@PathVariable("user_id") UUID user_id) {
         return this.userService.getUserById(user_id);
@@ -42,16 +44,19 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PutMapping("/{user_id}")
-    public User updateUserById(@PathVariable("user_id") UUID user_id, @Valid @RequestBody UserDTO body) {
+    public User updateUserById(@PathVariable("user_id") UUID user_id,  @RequestBody UserDTO body) {
         return this.userService.findUserByIdAndUpdate(user_id,body);
     }
 
-    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN','USER')")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PatchMapping(value = "/{user_id}/profile_image", consumes = "multipart/form-data")
-    public User updateProfileImage(@PathVariable("user_id") UUID user_id,
-                                  @RequestParam("profile_image") MultipartFile profileImage) {
-        return this.userService.updateProfileImage(user_id,profileImage);
+    public NewUserResponseDTO updateProfileImage(
+            @PathVariable UUID user_id,
+            @RequestParam ("profile_image") MultipartFile profileImage
+    ) {
+        return this.userService.updateProfileImage(user_id, profileImage);
     }
+
 
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
@@ -59,6 +64,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable("user_id") UUID user_id) {
         this.userService.findByIdAndDelete(user_id);
+
 
     }
 

@@ -2,7 +2,6 @@ package com.giuseppecalvaruso.library365.services;
 
 import com.giuseppecalvaruso.library365.API.CloudinaryService;
 import com.giuseppecalvaruso.library365.DTO.NewUserResponseDTO;
-import com.giuseppecalvaruso.library365.DTO.UpdateProfileImageDTO;
 import com.giuseppecalvaruso.library365.DTO.UserDTO;
 import com.giuseppecalvaruso.library365.entities.Role;
 import com.giuseppecalvaruso.library365.entities.User;
@@ -10,12 +9,9 @@ import com.giuseppecalvaruso.library365.exceptions.NotFoundException;
 import com.giuseppecalvaruso.library365.exceptions.ValidationException;
 import com.giuseppecalvaruso.library365.repositories.RoleRepository;
 import com.giuseppecalvaruso.library365.repositories.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -117,16 +113,22 @@ public class UserService {
     }
 
 
-    public User updateProfileImage(UUID user_id, MultipartFile file) {
-        User user = this.getUserById(user_id);
+    public NewUserResponseDTO updateProfileImage(UUID user_id, MultipartFile file) {
+        User user = userRepository.findById(user_id)
+                .orElseThrow(() -> new NotFoundException(user_id));
+
         String imageUrl = cloudinaryService.uploadImage(file);
         user.setUrl_pic(imageUrl);
-        return this.userRepository.save(user);
+
+        userRepository.save(user);
+        return new NewUserResponseDTO(user.getId());
     }
+
 
     public User getUserByIdWithRoles(UUID user_id) {
         return userRepository.findIdWithRoles(user_id).orElseThrow(() -> new NotFoundException(user_id));
     }
+
 
     private Role getOrCreateRole(String roleName){
         return roleRepository.findByName(roleName)

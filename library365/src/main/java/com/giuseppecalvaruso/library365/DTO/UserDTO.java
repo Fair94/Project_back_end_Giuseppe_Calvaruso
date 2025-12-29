@@ -17,7 +17,8 @@ public record UserDTO(UUID user_id,
 
                       @NotBlank(message = "Password is required")
                       @Size(min=8, max =32, message = "Password length must be between 8 and 32 characters")
-                      @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$")
+                      @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$",
+                      message = "Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number")
                       String password,
 
                       @NotBlank(message = "First Name is required")

@@ -30,11 +30,28 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults());
 
         http.authorizeHttpRequests(req -> req
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/auth/**","/error").permitAll()
                 .anyRequest().authenticated()
         );
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+
+
+        http.exceptionHandling(ex -> ex
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json");
+                    response.getWriter().write("""
+            {
+              "message": "You do not have permission to perform this action"
+            }
+        """);
+                })
+        );
+
+
+
 
 
         return http.build();

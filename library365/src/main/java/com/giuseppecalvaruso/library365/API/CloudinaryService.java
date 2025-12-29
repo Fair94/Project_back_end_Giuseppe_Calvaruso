@@ -26,10 +26,11 @@ public class CloudinaryService {
             );
 
             return (String) uploadResult.get("secure_url");
-        } catch (Exception e){
-            throw new RuntimeException("Error uploading image");
-        }
+        }  catch (Exception e){
+        throw new RuntimeException("Error uploading image: " + e.getMessage());
     }
+
+}
 
 
 
