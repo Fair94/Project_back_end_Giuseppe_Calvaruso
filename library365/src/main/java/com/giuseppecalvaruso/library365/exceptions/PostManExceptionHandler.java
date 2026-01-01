@@ -71,6 +71,20 @@ public class PostManExceptionHandler {
         );
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleNotReadable(HttpMessageNotReadableException ex) {
+        return new ResponseEntity<>(
+                Map.of(
+                        "timestamp", LocalDateTime.now(),
+                        "status", 400,
+                        "error", "Bad Request",
+                        "message", "Malformed JSON request"
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+
 
 }
 

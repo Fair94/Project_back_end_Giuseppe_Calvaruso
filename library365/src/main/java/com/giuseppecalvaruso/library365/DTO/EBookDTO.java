@@ -1,7 +1,12 @@
 package com.giuseppecalvaruso.library365.DTO;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotEmpty;
+import java.util.List;
+
 
 import java.util.UUID;
 
@@ -17,13 +22,20 @@ public record EBookDTO(UUID book_id,
                        @Size(max=500,message = "make a shorter description")
                        String description,
 
-                       @NotBlank(message="publication year is required")
+                       @NotNull(message="publication year is required")
+                       @Min(value = 0, message="publication year must be positive")
                        int publication_year,
 
+                       @NotEmpty(message = "At least one author is required")
+                       List<UUID> authorIds,
 
 
-                       @Size(max = 2048,message = "File url is too long")
+
+                       @NotBlank(message="File url is required")
+                       @Size(max = 2048, message = "File url is too long")
                        String fileUrl,
+
+
 
                        @NotBlank(message = "License is required ")
                        String licenseType) {

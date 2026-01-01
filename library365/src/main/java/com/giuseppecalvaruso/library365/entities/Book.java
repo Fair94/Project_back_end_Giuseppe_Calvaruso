@@ -30,7 +30,8 @@ public abstract class Book {
 
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+
     @JoinTable(
             name = "books_authors",
             joinColumns = @JoinColumn(name="book_id"),
@@ -101,13 +102,14 @@ public abstract class Book {
     @Override
     public String toString() {
         return "Book{" +
-                "title='" + title + '\'' +
-                ", cover_url='" +  + '\'' +
+                "book_id=" + book_id +
+                ", title='" + title + '\'' +
                 ", publication_year=" + publication_year +
                 ", description='" + description + '\'' +
                 ", ISBN='" + ISBN + '\'' +
                 '}';
     }
+
 
 
 }

@@ -36,11 +36,13 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 //                                Recuperiamo Header chiamato Authorization
             String authorizationHeader = request.getHeader("Authorization");
 
-//                                Controlliamo esistenza, se non esiste, lanciamo una eccezione personalizzata
-            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer "))
-                throw new UnauthorizedException("Token mancante o non corretto");
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-            String accessToken = authorizationHeader.replace("Bearer ", "");
+            String accessToken = authorizationHeader.substring(7);
+
 
 //                                Verifichiamo la corretteza del token
 
@@ -59,12 +61,19 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
 
-        } catch (UnauthorizedException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token problems!");
-        }
+        }  catch (UnauthorizedException e) {
+        SecurityContextHolder.clearContext();
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"message\":\"Invalid or expired token\"}");
     }
+        catch (Exception e) {
+            SecurityContextHolder.clearContext();
+            throw e;
+        }
+
+
+}
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {

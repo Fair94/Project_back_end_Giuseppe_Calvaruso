@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.giuseppecalvaruso.library365.DTO.CreateReservationDTO;
+import jakarta.validation.Valid;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -31,9 +34,10 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.CREATED)
     public NewReservationResponseDTO createReservation(
             @PathVariable("user_id") UUID user_id,
-            @RequestParam("book_id") UUID book_id
+            @RequestBody @Valid CreateReservationDTO body
     ) {
-        Reservation createdReservation = reservationService.createReservation(user_id, book_id);
+
+        Reservation createdReservation = reservationService.createReservation(user_id, body.book_id());
 
         return new NewReservationResponseDTO(
                 createdReservation.getReservation_id(),

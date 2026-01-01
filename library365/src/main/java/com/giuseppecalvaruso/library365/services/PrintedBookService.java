@@ -1,16 +1,12 @@
 package com.giuseppecalvaruso.library365.services;
 
-import com.giuseppecalvaruso.library365.DTO.EBookDTO;
-import com.giuseppecalvaruso.library365.DTO.NewEBookResponseDTO;
-import com.giuseppecalvaruso.library365.DTO.NewPrintedBookResponseDTO;
-import com.giuseppecalvaruso.library365.DTO.PrintedBookDTO;
-import com.giuseppecalvaruso.library365.entities.Author;
-import com.giuseppecalvaruso.library365.entities.EBook;
+import com.giuseppecalvaruso.library365.DTO.*;
 import com.giuseppecalvaruso.library365.entities.PrintedBook;
 import com.giuseppecalvaruso.library365.exceptions.EBookNotFoundException;
 import com.giuseppecalvaruso.library365.exceptions.NotFoundException;
 import com.giuseppecalvaruso.library365.exceptions.ValidationException;
 import com.giuseppecalvaruso.library365.repositories.PrintedBookRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,15 +29,22 @@ public class PrintedBookService {
 
     public NewPrintedBookResponseDTO save(PrintedBookDTO body){
 
-        if (body.Title()== null || body.ISBN()==null )
+        if (body.title()== null || body.ISBN()==null )
             throw new ValidationException("Title or ISBN or publication year is required");
 
-        String title = body.Title().trim();
+        String title = body.title().trim();
         String ISBN = body.ISBN().trim();
+
+        if (printedBookRepository.findByISBNIgnoreCase(ISBN).isPresent()) {
+            throw new ValidationException("ISBN already exists");
+        }
+
+
         int publication_year = body.publication_year();
 
-        if (title.length()<3 || ISBN.length()<3 || ISBN.length()>13)
-            throw new ValidationException("Title or ISBN are of an invalid length");
+        if (title.length() < 3 || ISBN.length() != 13)
+            throw new ValidationException("Title must be at least 3 characters and ISBN must be 13 characters");
+
 
 
         PrintedBook newPrintedBook  = new PrintedBook(
@@ -60,19 +63,25 @@ public class PrintedBookService {
         return new NewPrintedBookResponseDTO(savedPrintedbook.getBook_id());
     }
 
-    public PrintedBook findPrintedBookByIDAndUpdate(UUID book_id, PrintedBookDTO body){
-        PrintedBook foundPrintedbook =  printedBookRepository.findById(book_id).orElseThrow(()->new NotFoundException(book_id));
+    public PrintedBook findPrintedBookByIDAndUpdate(UUID book_id, PrintedBookUpdateDTO body){
+        PrintedBook found = printedBookRepository.findById(book_id)
+                .orElseThrow(() -> new NotFoundException(book_id));
 
-        if (body.Title()!= null ) foundPrintedbook.setTitle(body.Title());
-        if (body.ISBN()!= null) foundPrintedbook.setISBN(body.ISBN());
-        if (body.description()!= null) foundPrintedbook.setDescription(body.description());
+        if (body.title() != null) found.setTitle(body.title().trim());
+        if (body.ISBN() != null) found.setISBN(body.ISBN().trim());
+        if (body.description() != null) found.setDescription(body.description());
+        if (body.publication_year() != null) found.setPublication_year(body.publication_year());
+        if (body.position() != null) found.setPosition(body.position().trim());
+        if (body.totalCopies() != null) found.setTotalCopies(body.totalCopies());
+        if (body.availableCopies() != null) found.setAvailableCopies(body.availableCopies());
 
+        if (found.getAvailableCopies() > found.getTotalCopies()) {
+            throw new ValidationException("availableCopies cannot be greater than totalCopies");
+        }
 
-
-
-        return this.printedBookRepository.save(foundPrintedbook);
-
+        return printedBookRepository.save(found);
     }
+
 
     public void findByIdAndDelete(UUID book_id){
         PrintedBook foundPrintedbook =  printedBookRepository.findById(book_id).orElseThrow(()->new NotFoundException(book_id));

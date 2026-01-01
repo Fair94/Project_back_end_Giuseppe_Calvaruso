@@ -27,9 +27,11 @@ public class LoanController {
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @GetMapping
-    public List<Loan> getLoans(@PathVariable("user_id") User user){
-        return loanService.getLoanByUserId(user);
+    public List<Loan> getLoans(@PathVariable("user_id") UUID user_id){
+        return loanService.getLoansByUserId(user_id);
     }
+
+
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PostMapping
@@ -43,7 +45,7 @@ public class LoanController {
                 created.getLoan_date(),
                 created.getDue_date(),
                 created.getReturn_date(),
-                com.giuseppecalvaruso.library365.ENUM.LoanStatus.valueOf(created.getStatus().name()),
+                created.getStatus(),
                 created.getUser().getId(),
                 created.getBook().getBook_id()
         );
@@ -52,8 +54,9 @@ public class LoanController {
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PutMapping("/{loan_id}")
-    public NewLoanResponseDTO updateLoanById(@PathVariable UUID user_id,
-                               @PathVariable UUID loan_id){
+    public NewLoanResponseDTO updateLoanById(@PathVariable("user_id") UUID user_id,
+                                             @PathVariable("loan_id") UUID loan_id)
+    {
 
         Loan updateLoan = loanService.getLoanById(loan_id);
 
@@ -78,7 +81,9 @@ public class LoanController {
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @DeleteMapping("/{loan_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteLoanByID(@PathVariable("user_id") UUID user_id,@PathVariable UUID loan_id){
+    public void deleteLoanByID(@PathVariable("user_id") UUID user_id,
+                               @PathVariable("loan_id") UUID loan_id)
+    {
         Loan deletedLoan=loanService.getLoanById(loan_id);
 
         if(!deletedLoan.getUser().getId().equals(user_id)){

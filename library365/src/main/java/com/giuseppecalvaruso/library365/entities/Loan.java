@@ -1,7 +1,10 @@
 package com.giuseppecalvaruso.library365.entities;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.giuseppecalvaruso.library365.ENUM.LoanStatus;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -9,15 +12,16 @@ import java.util.UUID;
 @Entity
 @Table(name="loan")
 public class Loan {
+
     @Id
     @GeneratedValue
     @Column(name = "loan_id")
     private UUID loan_id;
 
-    @Column(name ="loan_date",nullable = false)
+    @Column(name ="loan_date", nullable = false)
     private LocalDateTime loan_date;
 
-    @Column(name = "due_date",nullable = false)
+    @Column(name = "due_date", nullable = false)
     private LocalDate due_date;
 
     @Column(name="return_date")
@@ -27,32 +31,24 @@ public class Loan {
     @Enumerated(EnumType.STRING)
     private LoanStatus status;
 
-
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="book_id", nullable = false)
+    @JsonIgnore
     private Book book;
 
-
-
-    public Book getBook() {
-        return book;
+    @JsonProperty("user_id")
+    public UUID getUser_id() {
+        return (user != null) ? user.getId() : null;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    @JsonProperty("book_id")
+    public UUID getBook_id() {
+        return (book != null) ? book.getBook_id() : null;
     }
 
     public Loan(LocalDateTime loan_date, LocalDate due_date, LocalDateTime return_date, LoanStatus status) {
@@ -62,48 +58,28 @@ public class Loan {
         this.status = status;
     }
 
-    public Loan() {
+    public Loan() {}
 
-    }
-    //Here I have to put relation with other entities
+    public UUID getLoan_id() { return loan_id; }
 
-    public UUID getLoan_id() {
-        return loan_id;
-    }
+    public LocalDateTime getLoan_date() { return loan_date; }
+    public void setLoan_date(LocalDateTime loan_date) { this.loan_date = loan_date; }
 
+    public LocalDate getDue_date() { return due_date; }
+    public void setDue_date(LocalDate due_date) { this.due_date = due_date; }
 
+    public LocalDateTime getReturn_date() { return return_date; }
+    public void setReturn_date(LocalDateTime return_date) { this.return_date = return_date; }
 
-    public LocalDateTime getLoan_date() {
-        return loan_date;
-    }
+    public LoanStatus getStatus() { return status; }
+    public void setStatus(LoanStatus status) { this.status = status; }
 
-    public void setLoan_date(LocalDateTime loan_date) {
-        this.loan_date = loan_date;
-    }
+    // JPA getters/setters
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public LocalDate getDue_date() {
-        return due_date;
-    }
-
-    public void setDue_date(LocalDate due_date) {
-        this.due_date = due_date;
-    }
-
-    public LocalDateTime getReturn_date() {
-        return return_date;
-    }
-
-    public void setReturn_date(LocalDateTime return_date) {
-        this.return_date = return_date;
-    }
-
-    public LoanStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(LoanStatus status) {
-        this.status = status;
-    }
+    public Book getBook() { return book; }
+    public void setBook(Book book) { this.book = book; }
 
     @Override
     public String toString() {
@@ -115,6 +91,4 @@ public class Loan {
                 ", status=" + status +
                 '}';
     }
-
-
 }

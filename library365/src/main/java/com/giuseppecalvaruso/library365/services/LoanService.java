@@ -38,56 +38,75 @@ public class LoanService {
         return loanRepository.findById(loan_id).orElseThrow(()-> new NotFoundException(loan_id));
     }
 
-    public List<Loan> getLoanByUserId(User user){
-       return loanRepository.findByUser(user);
+    public List<Loan> getLoansByUserId(UUID user_id){
+        User user = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
+        return loanRepository.findByUser(user);
     }
+
+
 
     public Loan createLoan(UUID user_id, UUID book_id){
-        User user = userRepository.findById(user_id).orElseThrow(()-> new NotFoundException(user_id));
-        Book book = bookRepository.findById(book_id).orElseThrow(()-> new NotFoundException(book_id));
+        User user = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
+        Book book = bookRepository.findById(book_id).orElseThrow(() -> new NotFoundException(book_id));
 
-        if (loanRepository.existsByBookAndStatus( book, LoanStatus.ACTIVE)){
-            throw new ValidationException("Book already loaned??");
+        // Se è EBook: blocca se già prestato (1 prestito alla volta)
+        if (!(book instanceof PrintedBook) && loanRepository.existsActiveLoanByBook(book, LoanStatus.ACTIVE)) {
+            throw new ValidationException("Book already loaned");
         }
 
+        // Se è PrintedBook: gestisci copie
         if (book instanceof PrintedBook printedBook) {
             if (printedBook.getAvailableCopies() <= 0) {
-                throw new ValidationException("Book has no available copies??");}
-                printedBook.setAvailableCopies(printedBook.getAvailableCopies() - 1);
-                bookRepository.save(printedBook);
+                throw new ValidationException("Book has no available copies");
             }
-            Loan newLoan = new Loan();
-            newLoan.setUser(user);
-            newLoan.setBook(book);
-
-            LocalDateTime now = LocalDateTime.now();
-            newLoan.setLoan_date(now);
-            newLoan.setDue_date(LocalDate.from(now.plusDays(14)));
-            newLoan.setReturn_date(null);
-            newLoan.setStatus(LoanStatus.ACTIVE);
-
-            return loanRepository.save(newLoan);
-
+            printedBook.setAvailableCopies(printedBook.getAvailableCopies() - 1);
+            bookRepository.save(printedBook);
         }
-        public Loan returnedLoan(UUID loan_id){
+
+        Loan newLoan = new Loan();
+        newLoan.setUser(user);
+        newLoan.setBook(book);
+
+        LocalDateTime now = LocalDateTime.now();
+        newLoan.setLoan_date(now);
+        newLoan.setDue_date(LocalDate.from(now.plusDays(14)));
+        newLoan.setReturn_date(null);
+        newLoan.setStatus(LoanStatus.ACTIVE);
+
+        return loanRepository.save(newLoan);
+    }
+
+
+    public Loan returnedLoan(UUID loan_id){
         Loan loan = this.getLoanById(loan_id);
 
-            if(loan.getStatus() == LoanStatus.RETURNED) return loan;
+        if (loan.getStatus() == LoanStatus.RETURNED) return loan;
 
-            loan.setReturn_date(LocalDateTime.now());
-            loan.setStatus(LoanStatus.RETURNED);
+        loan.setReturn_date(LocalDateTime.now());
+        loan.setStatus(LoanStatus.RETURNED);
 
-            Book book = loan.getBook();
-            if(book instanceof PrintedBook printedBook) {
-                printedBook.setAvailableCopies(printedBook.getAvailableCopies() +1 );
-                bookRepository.save(printedBook);
-        }
-            return loanRepository.save(loan);
+        Book book = loan.getBook();
+        if (book instanceof PrintedBook printedBook) {
+            printedBook.setAvailableCopies(printedBook.getAvailableCopies() + 1);
+            bookRepository.save(printedBook);
         }
 
-        public void deleteLoan(UUID loan_id){
-            Loan loan = this.getLoanById(loan_id);
-            loanRepository.delete(loan);
-        }
-
+        return loanRepository.save(loan);
     }
+
+    public void deleteLoan(UUID loan_id){
+        Loan loan = this.getLoanById(loan_id);
+
+        // Se non è RETURNED, sta occupando una copia (ACTIVE o LATE)
+        if (loan.getStatus() != LoanStatus.RETURNED) {
+            Book book = loan.getBook();
+            if (book instanceof PrintedBook printedBook) {
+                printedBook.setAvailableCopies(printedBook.getAvailableCopies() + 1);
+                bookRepository.save(printedBook);
+            }
+        }
+
+        loanRepository.delete(loan);
+    }
+
+}

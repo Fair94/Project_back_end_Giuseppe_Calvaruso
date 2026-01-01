@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.giuseppecalvaruso.library365.DTO.EBookResponseDTO;
+import com.giuseppecalvaruso.library365.DTO.AuthorDTO;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -36,11 +39,11 @@ public class EBookController {
     }
 
 
-    @GetMapping("author/{author_id}")
-    public List<EBook> getEBookByAuthor(@PathVariable UUID author_id){
-        Author author = authorService.findAuthorByID(author_id);
-        return EBookService.findByAuthor(author_id);
+    @GetMapping("/author/{author_id}")
+    public List<EBook> getEBookByAuthor(@PathVariable("author_id") UUID author_id){
+        return this.EBookService.findByAuthor(author_id);
     }
+
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PostMapping

@@ -34,22 +34,18 @@ public class AuthorService {
 
     }
 
-    public NewAuthorResponseDTO save (AuthorDTO body){
-        if (body.firstName()==null || body.lastName()==null)
-            throw new ValidationException("Missing required fields");
+    public NewAuthorResponseDTO save(AuthorDTO body){
 
         String firstName = body.firstName().trim();
         String lastName = body.lastName().trim();
+        String bio = body.bio() != null ? body.bio().trim() : null;
 
-        if(firstName.length()<3||lastName.length()<3)
-            throw new ValidationException("First name and last name must be of length 3 characters");
-
-        Author newAuthor = new Author(firstName,lastName, body.bio());
-
+        Author newAuthor = new Author(firstName, lastName, bio);
         Author authorSaved = authorRepository.save(newAuthor);
 
         return new NewAuthorResponseDTO(authorSaved.getId());
     }
+
 
     public Author findAuthorByID( UUID author_id) {
        return authorRepository.findById(author_id).orElseThrow(()-> new NotFoundException(author_id));
@@ -67,4 +63,17 @@ public class AuthorService {
         }
         authorRepository.delete(foundAuthor);
     }
+
+    public Author findAuthorByIDAndUpdate(UUID author_id, AuthorDTO body){
+        Author foundAuthor = authorRepository.findById(author_id)
+                .orElseThrow(() -> new NotFoundException(author_id));
+
+        // PUT: campi obbligatori, quindi li setti sempre
+        foundAuthor.setFirstName(body.firstName().trim());
+        foundAuthor.setLastName(body.lastName().trim());
+        foundAuthor.setBio(body.bio() != null ? body.bio().trim() : null);
+
+        return authorRepository.save(foundAuthor);
+    }
+
 }

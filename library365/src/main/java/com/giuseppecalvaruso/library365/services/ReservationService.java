@@ -1,9 +1,7 @@
 package com.giuseppecalvaruso.library365.services;
 
 import com.giuseppecalvaruso.library365.ENUM.ReservationStatus;
-import com.giuseppecalvaruso.library365.entities.Book;
-import com.giuseppecalvaruso.library365.entities.Reservation;
-import com.giuseppecalvaruso.library365.entities.User;
+import com.giuseppecalvaruso.library365.entities.*;
 import com.giuseppecalvaruso.library365.exceptions.NotFoundException;
 import com.giuseppecalvaruso.library365.exceptions.ValidationException;
 import com.giuseppecalvaruso.library365.repositories.BookRepository;
@@ -46,8 +44,18 @@ public class ReservationService {
         Book book = bookRepository.findById(book_id)
                 .orElseThrow(() -> new NotFoundException(book_id));
 
+        // Reservation = coda: la fai solo se il libro NON è disponibile
+        if (book instanceof PrintedBook printed) {
+            if (printed.getAvailableCopies() > 0) {
+                throw new ValidationException("Book is available: create a loan instead of a reservation");
+            }
+        } else if (book instanceof EBook) {
+            throw new ValidationException("EBook is available: reservation not allowed");
+        }
+
+
         boolean alreadyPending = reservationRepository
-                .existsByUserAndBookAndStatus(user, book, ReservationStatus.PENDING);
+                .existsReservation(user, book, ReservationStatus.PENDING);
 
         if (alreadyPending) {
             throw new ValidationException("Reservation already pending for this user/book");

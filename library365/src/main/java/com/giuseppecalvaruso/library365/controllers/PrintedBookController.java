@@ -2,6 +2,7 @@ package com.giuseppecalvaruso.library365.controllers;
 
 import com.giuseppecalvaruso.library365.DTO.NewPrintedBookResponseDTO;
 import com.giuseppecalvaruso.library365.DTO.PrintedBookDTO;
+import com.giuseppecalvaruso.library365.DTO.PrintedBookUpdateDTO;
 import com.giuseppecalvaruso.library365.entities.Author;
 import com.giuseppecalvaruso.library365.entities.PrintedBook;
 import com.giuseppecalvaruso.library365.services.AuthorService;
@@ -34,11 +35,11 @@ public class PrintedBookController {
         return this.printedBookService.getPrintedBookById(book_id);
     }
 
-    @GetMapping("author/{author_id}")
-    public List<PrintedBook>getPrintedBooksByAuthorId(@PathVariable("author_id") UUID author_id){
-        Author author = authorService.findAuthorByID(author_id);
-        return printedBookService.findByAuthor(author_id);
+    @GetMapping("/author/{author_id}")
+    public List<PrintedBook> getPrintedBooksByAuthorId(@PathVariable("author_id") UUID author_id){
+        return this.printedBookService.findByAuthor(author_id);
     }
+
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
     @PostMapping
@@ -48,10 +49,12 @@ public class PrintedBookController {
     }
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
-    @PutMapping({"/{book_id}"})
-    public PrintedBook updatePrintedBookByID(@PathVariable("book_id") UUID book_id, @Valid @RequestBody PrintedBookDTO body){
-        return this.printedBookService.findPrintedBookByIDAndUpdate(book_id,body);
+    @PutMapping("/{book_id}")
+    public PrintedBook updatePrintedBookByID(@PathVariable("book_id") UUID book_id,
+                                             @Valid @RequestBody PrintedBookUpdateDTO body){
+        return this.printedBookService.findPrintedBookByIDAndUpdate(book_id, body);
     }
+
 
 
     @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")

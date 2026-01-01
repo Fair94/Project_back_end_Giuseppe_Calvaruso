@@ -59,5 +59,15 @@ public class AuthorController {
         this.authorService.findByIDAndDelete(author_id);
     }
 
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN','SUPERADMIN')")
+    @PutMapping("/{author_id}")
+    public Author updateAuthorByID(
+            @PathVariable UUID author_id,
+            @Valid @RequestBody AuthorDTO body
+    ){
+        return this.authorService.findAuthorByIDAndUpdate(author_id, body);
+    }
+
+
 
 }

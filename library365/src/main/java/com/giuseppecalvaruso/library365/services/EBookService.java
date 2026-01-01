@@ -19,9 +19,12 @@ import java.util.UUID;
 public class EBookService {
     @Autowired
     private EbookRepository ebookRepository ;
+    @Autowired
+    private AuthorService authorService;
+
 
     public List<EBook> getAllEBooks(){
-        return ebookRepository.findAll();
+        return ebookRepository.findAllWithAuthors();
     }
 
     public EBook getEBookById(UUID book_id){
@@ -37,8 +40,9 @@ public class EBookService {
         String ISBN = body.ISBN().trim();
         int publication_year = body.publication_year();
 
-        if (title.length()<3 || ISBN.length()<3 || ISBN.length()>13)
-            throw new ValidationException("Title or ISBN are of an invalid length");
+        if (title.length() < 3 || ISBN.length() != 13)
+            throw new ValidationException("Title must be at least 3 characters and ISBN must be 13 characters");
+
 
 
         EBook newEBook  = new EBook(
@@ -49,6 +53,13 @@ public class EBookService {
                 body.fileUrl(),
                 body.licenseType()
         );
+
+        List<Author> authors = body.authorIds().stream()
+                .map(authorService::findAuthorByID)
+                .toList();
+
+        newEBook.setAuthors(authors);
+
 
         EBook savedEbook = ebookRepository.save(newEBook);
 
@@ -64,9 +75,10 @@ public class EBookService {
 
 
 
-        if(body.fileUrl()!= null){
-            String url_file = body.fileUrl().trim();
-            foundEbook.setFileUrl(url_file.isBlank()?null:url_file);
+        if (body.fileUrl() != null) {
+            String url = body.fileUrl().trim();
+            if (url.isBlank()) throw new ValidationException("File url cannot be blank");
+            foundEbook.setFileUrl(url);
         }
         if(body.licenseType()!= null) foundEbook.setLicenseType(body.licenseType());
 

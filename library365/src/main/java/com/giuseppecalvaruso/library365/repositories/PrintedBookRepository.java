@@ -15,7 +15,15 @@ import java.util.UUID;
 
 public interface PrintedBookRepository extends JpaRepository<PrintedBook, UUID> {
 
-    boolean existsByAuthors_Id(UUID author_id);
+    @Query("""
+    SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
+    FROM PrintedBook p
+    JOIN p.authors a
+    WHERE a.id = :author_id
+""")
+    boolean existsByAuthors_Id(@Param("author_id") UUID author_id);
+
+
 
     Optional<PrintedBook> findByISBNIgnoreCase(String isbn);
 
@@ -37,4 +45,6 @@ public interface PrintedBookRepository extends JpaRepository<PrintedBook, UUID> 
                                            @Param("lastName") String lastName);
 
     List<PrintedBook> findByAuthors_Id(UUID author_id);
+    boolean existsByISBNIgnoreCase(String isbn);
+
 }

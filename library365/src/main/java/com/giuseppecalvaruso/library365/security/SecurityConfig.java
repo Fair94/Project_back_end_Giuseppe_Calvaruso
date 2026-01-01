@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
+
 
 @Configuration
 @EnableWebSecurity
@@ -30,9 +32,15 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults());
 
         http.authorizeHttpRequests(req -> req
-                .requestMatchers("/auth/**","/error").permitAll()
+                .requestMatchers("/auth/**", "/error").permitAll()
+
+                // GET pubblici
+                .requestMatchers(HttpMethod.GET, "/ebooks/**", "/books/**", "/authors/**").permitAll()
+
+                // tutto il resto protetto
                 .anyRequest().authenticated()
         );
+
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -49,6 +57,20 @@ public class SecurityConfig {
         """);
                 })
         );
+
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"message\":\"Unauthorized\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"message\":\"You do not have permission to perform this action\"}");
+                })
+        );
+
 
 
 

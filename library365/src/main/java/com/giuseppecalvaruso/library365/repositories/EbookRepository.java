@@ -15,9 +15,23 @@ import java.util.UUID;
 @Repository
 public interface EbookRepository extends JpaRepository<EBook, UUID> {
 
-    boolean existsByAuthors_Id(UUID author_id);
+    @Query("""
+    SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
+    FROM PrintedBook p
+    JOIN p.authors a
+    WHERE a.id = :author_id
+""")
+    boolean existsByAuthors_Id(@Param("author_id") UUID author_id);
+
 
     Optional<EBook> findByISBNIgnoreCase(String isbn);
+    @Query("""
+    SELECT DISTINCT e
+    FROM EBook e
+    LEFT JOIN FETCH e.authors
+""")
+    List<EBook> findAllWithAuthors();
+
 
     @Query("""
         SELECT DISTINCT e
