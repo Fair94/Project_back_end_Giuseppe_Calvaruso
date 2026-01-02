@@ -1,4 +1,5 @@
-# LIBRARY365 
+# LIBRARY365  
+-[HOW TO](#how-to)
 
 ## PROJECT THEME
 
