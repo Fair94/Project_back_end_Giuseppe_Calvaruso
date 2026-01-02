@@ -133,12 +133,12 @@ For my project, I used cloudinary for storing profile images.I've also used goog
 ## HOW TO:
 In this section I will tell you what do you need to set up the environment in order to test the app.  
 1)```Intellij```: Download it from https://www.jetbrains.com/idea/download/?section=windows  
-    Install it  
+    Install it  , follow automatic configuration  
 2)```PgAdmin and Postgre SQL``` : Download it from https://www.enterprisedb.com/downloads/postgres-postgresql-downloads  
-Install it  
+Install it, configure it, open it, create a database   
 3)```Postman```: Useful tool to test the app. Download it from https://www.postman.com/downloads/  
-Install it  
-4)```Project ```: Download the folder from github.After that, you need to open the folder inside intellij. After you open it, you need to import dependencies.   
+Install it, you do  need to create an account  
+4)```Project ```: Download the folder from github.After that, you need to open the folder inside intellij. , unzip it. Open intellij, open the unzipped folder.  After you open it, you need to import dependencies. Usually intellij do this automatically. You can see the progress in the right bottom corner of intellij     
 5)```Env.properties```: I've left an env.properties example file in resources folder . You need to rename it exactly ```env.properties```  
 In the fields inside the file , you need to add:  
 ```DB_URL= (after the = you need to put the database url, usually beginning with jdbc:postgresql://localhost:5432/db_name. Check it inside pgadmin Setting )```  
@@ -149,5 +149,6 @@ In the fields inside the file , you need to add:
 ```CLOUDINARY_SECRET=(log or register to cloudinary, you will find this info in dashboard)```  
 ```CLOUDINARY_KEY=(log or register to cloudinary, you will find this info in dashboard)```  
 6)Inside resources folder , you will find the postman collection. If you want to run the app, you need to import this file through postman import command.  
-7)Postman instruction: I suggest , in order to test postman, to use a txt file, where you past authorization toke, user_id or book_id. Usually the request require a user_id, an author_id ,an access token, a book_id and a body.I've left some example, so you do not have any difficulties to do that 
-
+7)Postman instruction: I suggest , in order to test postman, to use a txt file, where you past authorization token, user_id or book_id. Usually the request require a user_id, an author_id ,an access token, a book_id and a body.I've left some example, so you do not have any difficulties to do that 
+8)Before going with postman request, remember to start the app from the entry point ```Library365Application```
+9) In case you do not have any JDK installed, intellij will suggest to download it. You can use the one suggested from intellij or you can manually install it one 
