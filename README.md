@@ -113,3 +113,37 @@ The best practices includes using of annotation like ```@NotBlank```, ```@Size``
 ## REST API's : CONTROLLER, REPOSITORY AND SERVICE 
 This application exposes main functionality using CRUD operations (POST, GET,PATCH, PUT, DELETE ) taken from repositories and implementing it with other useful method.
 Every entity, where possible, has its own Controller and its own Service. This fragmentation enhance modularity and code reusability, enhancing loose coupling
+
+## AUTH 
+For application's authorization I've used JWT token. In particularly, for Postman, I've used token Bearer.
+In Project's folder there are 4 classes: ```JWTAuthFilter , JWTTools, SecurityConfig``` are classes used mainly to set up filter chain, token generations and to secure endpoint.  
+```PasswordConfig``` was used to secure and crypt user's password.
+
+## QUERIES
+In repositories, alongside JPA method, I've used native sql query. I've not used any JPQL hybrid query cause they return me many errors.
+Those errors are my fault. I've used many underscore and JPQL is very sensitive about underscore 
+
+## ERROR HANDLING
+I've protected the stack the best i could do. Mainly I've created in ```exceptions ``` folder many exception handler, even one for postmanstack
+
+## 3RD PARTY APIs
+For my project, I used cloudinary for storing profile images.I've also used google free api for retrieving book from a public database and insert it in my database. 
+
+## HOW TO:
+In this section I will tell you what do you need to set up the environment in order to test the app.  
+1)```Intellij```: Download it from https://www.jetbrains.com/idea/download/?section=windows  
+    Install it  
+2)```PgAdmin and Postgre SQL``` : Download it from https://www.enterprisedb.com/downloads/postgres-postgresql-downloads  
+Install it  
+3)```Postman```: Useful tool to test the app. Download it from https://www.postman.com/downloads/  
+Install it  
+4)```Project ```: Download the folder from github.After that, you need to open the folder inside intellij. After you open it, you need to import dependencies.   
+5)```Env.properties```: I've left an env.properties example file in resources folder . You need to rename it exactly ```env.properties```  
+In the fields inside the file , you need to add:  
+```DB_URL= (after the = you need to put the database url, usually beginning with jdbc:postgresql://localhost:5432/db_name. Check it inside pgadmin Setting )```  
+```DB_USERNAME=(username used to log inside pgAdmin)```    
+```DB_PASSWORD=(password used to log inside pgAdmin)```    
+```JWT_SECRET=use a 32 characters string with numbers, special characters and variety of upper and lowercase letter```  
+```CLOUDINARY_NAME=(log or register to cloudinary, you will find this info in dashboard)```  
+```CLOUDINARY_SECRET=(log or register to cloudinary, you will find this info in dashboard)```  
+```CLOUDINARY_KEY=(log or register to cloudinary, you will find this info in dashboard)```  
