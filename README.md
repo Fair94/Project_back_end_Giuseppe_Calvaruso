@@ -147,3 +147,6 @@ In the fields inside the file , you need to add:
 ```CLOUDINARY_NAME=(log or register to cloudinary, you will find this info in dashboard)```  
 ```CLOUDINARY_SECRET=(log or register to cloudinary, you will find this info in dashboard)```  
 ```CLOUDINARY_KEY=(log or register to cloudinary, you will find this info in dashboard)```  
+6)Inside resources folder , you will find the postman collection. If you want to run the app, you need to import this file through postman import command.  
+7)Postman instruction: I suggest , in order to test postman, to use a txt file, where you past authorization toke, user_id or book_id. Usually the request require a user_id, an author_id ,an access token, a book_id and a body.I've left some example, so you do not have any difficulties to do that 
+
