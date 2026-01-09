@@ -49,12 +49,12 @@ public class LoanService {
         User user = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException(user_id));
         Book book = bookRepository.findById(book_id).orElseThrow(() -> new NotFoundException(book_id));
 
-        // Se è EBook: blocca se già prestato (1 prestito alla volta)
+        // Se è EBook:  (1 prestito alla volta)
         if (!(book instanceof PrintedBook) && loanRepository.existsActiveLoanByBook(book, LoanStatus.ACTIVE)) {
             throw new ValidationException("Book already loaned");
         }
 
-        // Se è PrintedBook: gestisci copie
+        // Se è PrintedBook: gestisci  le copie
         if (book instanceof PrintedBook printedBook) {
             if (printedBook.getAvailableCopies() <= 0) {
                 throw new ValidationException("Book has no available copies");
@@ -97,7 +97,7 @@ public class LoanService {
     public void deleteLoan(UUID loan_id){
         Loan loan = this.getLoanById(loan_id);
 
-        // Se non è RETURNED, sta occupando una copia (ACTIVE o LATE)
+        // Se non è RETURNED, sta occupando una copia / slot
         if (loan.getStatus() != LoanStatus.RETURNED) {
             Book book = loan.getBook();
             if (book instanceof PrintedBook printedBook) {

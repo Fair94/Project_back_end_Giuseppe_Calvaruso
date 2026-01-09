@@ -37,7 +37,7 @@ public class SecurityConfig {
                 // GET pubblici
                 .requestMatchers(HttpMethod.GET, "/ebooks/**", "/books/**", "/authors/**").permitAll()
 
-                // tutto il resto protetto
+                //  il resto protetto
                 .anyRequest().authenticated()
         );
 

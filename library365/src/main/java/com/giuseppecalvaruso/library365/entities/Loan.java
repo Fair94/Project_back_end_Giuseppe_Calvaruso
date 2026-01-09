@@ -74,7 +74,7 @@ public class Loan {
     public LoanStatus getStatus() { return status; }
     public void setStatus(LoanStatus status) { this.status = status; }
 
-    // JPA getters/setters
+
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 

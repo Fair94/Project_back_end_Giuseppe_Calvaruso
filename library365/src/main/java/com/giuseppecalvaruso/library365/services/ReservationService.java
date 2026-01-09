@@ -44,7 +44,7 @@ public class ReservationService {
         Book book = bookRepository.findById(book_id)
                 .orElseThrow(() -> new NotFoundException(book_id));
 
-        // Reservation = coda: la fai solo se il libro NON è disponibile
+        // Reservation = coda, ricordalo
         if (book instanceof PrintedBook printed) {
             if (printed.getAvailableCopies() > 0) {
                 throw new ValidationException("Book is available: create a loan instead of a reservation");
